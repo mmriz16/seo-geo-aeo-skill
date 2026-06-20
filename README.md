@@ -2,6 +2,8 @@
 
 **v2.0.0** · 1,599 lines · 70KB
 
+**Python ≥ 3.7** required for scripts. No pip packages needed — all scripts use stdlib only.
+
 A comprehensive skill for **full-stack search visibility** — from crawlability and sitemaps to AI citation readiness and future agent-ready infrastructure. Covers all five overlapping discovery layers:
 
 ```
@@ -30,21 +32,57 @@ SEO ↔ Entity SEO ↔ GEO ↔ AEO ↔ LLMO
 - **8 Real Python Scripts** (1,623 lines) — stdlib-only, ready to run: security headers, robots.txt, CWV, schema, llms.txt, sitemap, HTML report, AI visibility tracker
 - **22 Official Reference Links** — direct hrefs to Google Search Central docs throughout
 
+## Requirements
+
+- **Python ≥ 3.7** — all scripts use stdlib only (zero `pip install` needed)
+- **Internet** — scripts fetch live data from target URLs and Google APIs
+- **OS** — tested on Windows 10/11, should work on Linux/macOS
+
 ## How to Use
+
+### Quick start: full audit in 3 commands
+
+```bash
+# 1. Clone atau download repo
+git clone https://github.com/mmriz16/seo-geo-aeo-skill.git
+cd seo-geo-aeo-skill
+
+# 2. Jalanin semua check individual
+python3 scripts/check_security_headers.py https://example.com
+python3 scripts/check_robots_txt.py https://example.com
+python3 scripts/check_llms_files.py https://example.com
+python3 scripts/check_schema.py https://example.com
+python3 scripts/check_sitemap.py https://example.com
+python3 scripts/check_core_web_vitals.py https://example.com
+
+# 3. Generate HTML report (aggregate semua hasil)
+python3 scripts/generate_score_report.py https://example.com --output report.html --open
+```
+
+### Fast single-query check
+
+```bash
+# Headers only
+python3 scripts/check_security_headers.py https://example.com
+
+# Headers as JSON (for piping into other tools)
+python3 scripts/check_security_headers.py https://example.com --json | jq .score
+
+# AI visibility (interactive)
+python3 scripts/check_ai_visibility.py
+```
 
 ### As a CLI agent skill (Claude Code, Cursor, Codex, etc.)
 
 ```bash
 # Copy to your agent's skills directory
-cp SKILL.md ~/.agents/skills/seo-geo-aeo/
-# Or add via skillfish
-npx skillfish add mmriz16/seo-geo-aeo-skill seo-geo-aeo
+cp -r SKILL.md scripts/ ~/.agents/skills/seo-geo-aeo/
 ```
 
 Then in your agent:
 
 ```
-"AUDIT https://example.com using ROSTIDO-SCORE"
+"AUDIT https://example.com using ROSTIDO-SCORE — run all scripts and generate HTML report"
 "Check GEO readiness for rostido.termicons.com"
 "Create an AEO-optimized FAQ section with speakable schema"
 "Map query fan-out for 'social media automation'"
@@ -63,8 +101,56 @@ Open `SKILL.md` and navigate:
 - **§9** → Skill contract & handoff protocol
 - **§10** → Query fan-out templates
 - **§12** → Priority tiers P0-P3
-- **Appendix C** → Automation scripts (8 real Python scripts, 1,623 lines)
-- **`scripts/`** → Ready-to-run Python scripts: `check_security_headers.py`, `check_robots_txt.py`, `check_core_web_vitals.py`, `check_schema.py`, `check_llms_files.py`, `check_sitemap.py`, `generate_score_report.py`, `check_ai_visibility.py`
+- **`scripts/`** → 8 real Python scripts
+
+## Scripts Reference
+
+| Script | Checks | Exit Codes | Output |
+|--------|--------|:----------:|--------|
+| `check_security_headers.py` | HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy, HTTPS | 0=pass, 1=fail | Score 0-100 + per-header status |
+| `check_robots_txt.py` | robots.txt exists, Sitemap directive, AI crawler rules (10 bots) | 0=found, 1=not found | Score 0-100 + per-bot allow/block |
+| `check_core_web_vitals.py` | LCP, INP, CLS, TTFB, FCP via Google PageSpeed Insights | 0=ok, 1=error | Score 0-100 + metric values + opportunities |
+| `check_schema.py` | All JSON-LD blocks, 10 recommended schema types validation | 0=score≥50, 1=<50 | Score 0-100 + found schemas + recommendations |
+| `check_llms_files.py` | /llms.txt, /pricing.md, /AGENTS.md — HTTP status + content quality | 0=score≥50, 1=<50 | Score 0-100 + per-file stats + preview |
+| `check_sitemap.py` | Sitemap XML, nested index support, lastmod coverage | 0=found, 1=not found | Score 0-100 + URL count + sample URLs |
+| `generate_score_report.py` | Aggregates all checks → ROSTIDO-SCORE HTML dashboard | 0=ok, 1=error | Self-contained HTML file with bar charts + priorities |
+| `check_ai_visibility.py` | Interactive ChatGPT/Perplexity/Gemini/AI Overviews tracking | 0=ok | JSON + save to ai_visibility_tracker.json |
+
+### Common flags (all scripts)
+
+| Flag | Effect |
+|------|--------|
+| `--json` | Output JSON instead of human-readable format |
+| `-h` / `--help` | Show usage |
+
+### Full audit workflow
+
+```bash
+# Step 1: Run all checks (save JSON results)
+python3 scripts/check_security_headers.py https://example.com --json > /tmp/seo-headers.json
+python3 scripts/check_robots_txt.py https://example.com --json > /tmp/seo-robots.json
+python3 scripts/check_llms_files.py https://example.com --json > /tmp/seo-llms.json
+python3 scripts/check_schema.py https://example.com --json > /tmp/seo-schema.json
+python3 scripts/check_sitemap.py https://example.com --json > /tmp/seo-sitemap.json
+
+# Step 2: Generate report
+echo '{"url":"https://example.com","checks":{' > /tmp/seo-all.json
+# Combine results manually or use the all-in-one:
+python3 scripts/generate_score_report.py https://example.com --output rostido-report.html
+```
+
+### Limitations
+
+These scripts **do NOT** check:
+- Internal link structure or broken links
+- Crawl depth or orphan pages
+- Keyword placement, content quality, or readability
+- Core Web Vitals **field data** (uses lab data from PSI — close but not CrUX real-user data)
+- INP directly (PSI provides it as experimental metric for some origins)
+- Social media presence, backlink profile, or brand mention analysis
+- JS-rendered content (fetches raw HTML only)
+
+For those checks, use dedicated tools like Screaming Frog, Ahrefs, or Google Search Console.
 
 ## Scoring System
 
