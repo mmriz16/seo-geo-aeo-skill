@@ -93,6 +93,29 @@ Each item scores 0 (missing), 5 (partial), or 10 (fully implemented). Veto items
 - Ahrefs — Brand Mentions vs Backlinks Study (Dec 2025)
 - Search Engine Land — Entity Home concept (Jason Barnard / Kalicube)
 
+## API Keys & Rate Limits
+
+Some scripts call external APIs and benefit from a free API key to avoid rate limits:
+
+| Script | API | Rate Limit (no key) | Rate Limit (with key) | How to Get Key |
+|--------|-----|:-------------------:|:---------------------:|----------------|
+| `check_core_web_vitals.py` | **Google PageSpeed Insights** | 240 queries/day per IP | 25,000 queries/day | [Google Cloud Console](https://console.cloud.google.com/apis/credentials) → Create API Key → Enable PageSpeed Insights API → Set `PAGESPEED_API_KEY` env var |
+
+### Setting API Keys
+
+```bash
+# Option 1: Environment variable (per session)
+export PAGESPEED_API_KEY=AIzaSy...
+
+# Option 2: .env file in project root
+echo "PAGESPEED_API_KEY=AIzaSy..." >> .env
+
+# Option 3: Pass inline
+PAGESPEED_API_KEY=AIzaSy... python3 scripts/check_core_web_vitals.py https://example.com
+```
+
+All scripts fall back gracefully without API keys — they'll work but may hit rate limits under heavy use.
+
 ## License
 
 Apache-2.0
