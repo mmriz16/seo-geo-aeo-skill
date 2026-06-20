@@ -43,11 +43,11 @@ SEO ↔ Entity SEO ↔ GEO ↔ AEO ↔ LLMO
 ### Quick start: full audit in 3 commands
 
 ```bash
-# 1. Clone atau download repo
+# 1. Clone the repo
 git clone https://github.com/mmriz16/seo-geo-aeo-skill.git
 cd seo-geo-aeo-skill
 
-# 2. Jalanin semua check individual
+# 2. Run all individual checks
 python3 scripts/check_security_headers.py https://example.com
 python3 scripts/check_robots_txt.py https://example.com
 python3 scripts/check_llms_files.py https://example.com
@@ -55,7 +55,7 @@ python3 scripts/check_schema.py https://example.com
 python3 scripts/check_sitemap.py https://example.com
 python3 scripts/check_core_web_vitals.py https://example.com
 
-# 3. Generate HTML report (aggregate semua hasil)
+# 3. Generate HTML report (aggregate all results)
 python3 scripts/generate_score_report.py https://example.com --output report.html --open
 ```
 
