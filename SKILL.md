@@ -1501,6 +1501,111 @@ python3 scripts/check_ai_visibility.py
 
 ---
 
+## HTML Report Format (`generate_score_report.py`)
+
+When you run the full audit, the script produces a **self-contained HTML report** with Framer-inspired dark design. Open it in any browser — no server needed.
+
+### Report Structure
+
+```
+┌──────────────────────────────────────────────────────┐
+│  🌑 Dark Canvas (#090909)                           │
+│                                                      │
+│  ┌── Gradient Spotlight Card ───────────────────┐    │
+│  │  60                                          │    │  ← 85px display type
+│  │  Overall Score  /100                         │    │     negative letter-spacing
+│  │  ROSTIDO-SCORE v2.0 — All checks run live    │    │     gradient glow via ::before/::after
+│  └──────────────────────────────────────────────┘    │
+│                                                      │
+│  ┌── Veto Banner (conditional) ────────────────┐    │
+│  │  🚫 VETO ITEMS ACTIVE — score capped 50/100  │    │  ← coral-magenta gradient
+│  └──────────────────────────────────────────────┘    │
+│                                                      │
+│  ┌── Dimension Scores ─────────────────────────┐    │
+│  │  Technical SEO     ████████░░ 49/100  20%   │    │  ← pill-shaped progress bars
+│  │  Content & Auth    ░░░░░░░░░░  0/100  20%   │    │     (border-radius: 100px)
+│  │  Entity & KG       █████████░ 80/100  15%   │    │
+│  │  GEO-readiness     █████████░100/100  20%   │    │
+│  │  AEO-readiness     █████████░100/100  15%   │    │
+│  │  Trust & Security  ███░░░░░░░ 30/100  10%   │    │
+│  └──────────────────────────────────────────────┘    │
+│                                                      │
+│  ┌── Check Results ────────────────────────────┐    │
+│  │  ❌ Security Headers                    0   │    │
+│  │  ✅ Robots Txt                         100  │    │
+│  │  ⚠️  Core Web Vitals                    N/A  │    │
+│  │  ❌ Schema                               0   │    │
+│  │  ✅ Llms Files                         100  │    │
+│  │  ✅ Sitemap                            100  │    │
+│  │  ⚠️  Analytics Presence                  45  │    │
+│  └──────────────────────────────────────────────┘    │
+│                                                      │
+│  ┌── Priority Actions ─────────────────────────┐    │
+│  │  🔴 P0 — Must Fix                           │    │
+│  │    [HIGH] HSTS: Strict-Transport-Security... │    │  ← coral #ff5577
+│  │  🟡 P1 — Should Fix                         │    │
+│  │    [MEDIUM] X-Frame-Options: ...            │    │  ← orange #ff7a3d
+│  │  ⚪ P2 — Nice to Have                       │    │
+│  │    [LOW] Permissions-Policy: ...            │    │  ← muted #999999
+│  └──────────────────────────────────────────────┘    │
+│                                                      │
+│  ┌── Solutions & Code Examples ────────────────┐    │
+│  │  🔒 Security Headers                        │    │  ← blue accent border
+│  │  // next.config.js                          │    │     (#0099ff left border)
+│  │  const securityHeaders = [ ... ]            │    │
+│  │  📋 Missing Schema Types                    │    │
+│  │  { "@context": "https://schema.org", ... }  │    │
+│  │  🗺️ Sitemap Content Coverage               │    │
+│  │  📈 Analytics & Search Console              │    │
+│  │  🤖 GEO / LLMS.txt Optimization            │    │
+│  └──────────────────────────────────────────────┘    │
+│                                                      │
+│  github.com/mmriz16/seo-geo-aeo-skill                │  ← footer, #999999
+└──────────────────────────────────────────────────────┘
+```
+
+### Scoring Formula
+
+```
+Overall = T×0.20 + C×0.20 + E×0.15 + G×0.20 + A×0.15 + R×0.10
+
+Where:
+  T = Technical SEO     (security headers, robots.txt, sitemap, analytics)
+  C = Content & Auth    (CWV performance score)
+  E = Entity & KG       (Organization schema presence)
+  G = GEO-readiness     (llms.txt, pricing.md, AGENTS.md)
+  A = AEO-readiness     (schema completeness: FAQPage, speakable, etc.)
+  R = Trust & Security   (HTTPS, HSTS, CSP, XFO, XCTO)
+```
+
+### Icons & Thresholds
+
+| Icon | Score Range | Meaning |
+|------|:-----------:|---------|
+| 🟢 ✅ | ≥ 80 | Good — no action needed |
+| 🟡 ⚠️ | 50 – 79 | Needs improvement |
+| 🔴 ❌ | < 50 | Critical — action required |
+| ⚪ ⚠️ | N/A | Check unavailable (timeout/error) |
+
+### Veto System
+
+If certain critical checks fail, a **coral-magenta gradient banner** appears and the overall score is capped at 50/100:
+
+- ❌ **HTTPS not enabled** — site must run on HTTPS
+- ❌ **No Organization schema** — AI crawlers can't identify the entity
+- ❌ **No llms.txt** — AI crawlers have no structured context
+
+### Solutions Block
+
+Each report includes actionable code examples tailored to the audit findings:
+- **Security Headers** → Complete `next.config.js` with all 6 headers
+- **Missing Schema** → Copy-paste JSON-LD for WebSite, BreadcrumbList, Speakable
+- **Sitemap Coverage** → `next-sitemap.config.js` with content paths
+- **Analytics & GSC** → GA4 tag snippet + DNS TXT verification steps
+- **GEO Optimization** → llms.txt expansion guidelines
+
+---
+
 # APPENDIX D: TOOLS REFERENCE
 
 | Purpose | Tool | Cost | URL |
