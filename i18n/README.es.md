@@ -4,7 +4,7 @@
 
 **Python ≥ 3.7** requerido. No necesita `pip install` — todos los scripts usan solo la biblioteca estándar.
 
-**🌐 Leer en otros idiomas:** [English](README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
+**🌐 Leer en otros idiomas:** [English](../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
 
 Un skill integral para **visibilidad de búsqueda full-stack** — desde rastreabilidad y sitemaps hasta preparación para citas de IA e infraestructura preparada para agentes. Cubre las cinco capas de descubrimiento superpuestas:
 

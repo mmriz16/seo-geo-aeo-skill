@@ -4,7 +4,7 @@
 
 **Python ≥ 3.7** required for scripts. No pip packages needed — all scripts use stdlib only.
 
-**🌐 README in other languages:** [English](README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
+**🌐 README in other languages:** [English](README.md) · [Bahasa Indonesia](i18n/README.id.md) · [中文](i18n/README.zh.md) · [Español](i18n/README.es.md) · [日本語](i18n/README.ja.md)
 
 A comprehensive skill for **full-stack search visibility** — from crawlability and sitemaps to AI citation readiness and future agent-ready infrastructure. Covers all five overlapping discovery layers:
 

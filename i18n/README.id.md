@@ -4,7 +4,7 @@
 
 **Python ≥ 3.7** diperlukan untuk skrip. Tidak perlu `pip install` — semua skrip hanya menggunakan stdlib.
 
-**🌐 Baca dalam bahasa lain:** [English](README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
+**🌐 Baca dalam bahasa lain:** [English](../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
 
 Skill komprehensif untuk **visibilitas pencarian full-stack** — dari crawlability dan sitemap hingga kesiapan kutipan AI dan infrastruktur agent-ready di masa depan. Mencakup lima lapisan penemuan yang saling tumpang tindih:
 

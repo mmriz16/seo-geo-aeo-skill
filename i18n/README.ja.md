@@ -4,7 +4,7 @@
 
 **Python ≥ 3.7** が必要です。`pip install` は不要 — すべてのスクリプトは標準ライブラリのみを使用します。
 
-**🌐 他の言語：** [English](README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
+**🌐 他の言語：** [English](../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
 
 **フルスタック検索可視性** のための包括的なスキル — クローラビリティやサイトマップから AI 引用準備、将来のエージェント対応インフラまで。5 つの重複する発見レイヤーをカバーします：
 

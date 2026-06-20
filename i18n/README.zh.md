@@ -4,7 +4,7 @@
 
 **需要 Python ≥ 3.7**。无需 pip 安装 — 所有脚本仅使用标准库。
 
-**🌐 其他语言版本：** [English](README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
+**🌐 其他语言版本：** [English](../README.md) · [Bahasa Indonesia](README.id.md) · [中文](README.zh.md) · [Español](README.es.md) · [日本語](README.ja.md)
 
 一个全面的 **全栈搜索可见性** 技能 — 从可爬取性和站点地图到 AI 引用准备度和面向代理的未来基础设施。涵盖五个相互重叠的发现层：
 
