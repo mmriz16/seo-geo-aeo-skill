@@ -48,17 +48,17 @@ VETO_DIMENSIONS = {
 CHECK_MAP = {
     "check_security_headers": {
         "dim": "technical",
-        "weight_in_dim": 0.5,
+        "weight_in_dim": 0.4,
         "label": "Security Headers"
     },
     "check_robots_txt": {
         "dim": "technical",
-        "weight_in_dim": 0.3,
+        "weight_in_dim": 0.25,
         "label": "Robots.txt"
     },
     "check_sitemap": {
         "dim": "technical",
-        "weight_in_dim": 0.2,
+        "weight_in_dim": 0.15,
         "label": "Sitemap"
     },
     "check_core_web_vitals": {
@@ -75,6 +75,11 @@ CHECK_MAP = {
         "dim": "aeo",
         "weight_in_dim": 0.6,
         "label": "Schema"
+    },
+    "check_analytics_presence": {
+        "dim": "technical",
+        "weight_in_dim": 0.15,
+        "label": "Analytics & GSC"
     },
 }
 
@@ -123,6 +128,7 @@ def run_all_checks(url: str, scripts_dir: str) -> dict:
         "check_schema.py",
         "check_llms_files.py",
         "check_sitemap.py",
+        "check_analytics_presence.py",
     ]
     for name in script_names:
         path = os.path.join(scripts_dir, name)
@@ -268,6 +274,17 @@ def generate_recommendations(dim_scores: dict, checks: dict) -> tuple:
     for w in robots_check.get("warnings", []):
         p2.append(f"[LOW] {w}")
 
+    # Analytics & GSC
+    analytics_check = checks.get("check_analytics_presence", {})
+    if analytics_check:
+        if not analytics_check.get("gsc_verified"):
+            p1.append("[MEDIUM] Google Search Console not verified — required for crawl monitoring, index coverage, and ranking insights")
+        tracking = analytics_check.get("tracking_tools", [])
+        if "GA4" not in tracking:
+            p1.append("[MEDIUM] Google Analytics 4 not detected — needed for audience insight, traffic analysis, and GEO performance tracking")
+        if "Meta Pixel" not in tracking:
+            p2.append("[LOW] Meta Pixel not detected — recommended if running social media ads")
+
     return p0, p1, p2
 
 
@@ -408,6 +425,53 @@ module.exports = {
         <li>Technical stack summary (Next.js, Tailwind, etc.)</li>
         <li>User count or trust signals (if available)</li>
       </ul>
+    </div>""")
+
+    # Analytics & GSC section
+    analytics_check = checks.get("check_analytics_presence", {})
+    if analytics_check:
+        gsc_verified = analytics_check.get("gsc_verified", False)
+        tracking = analytics_check.get("tracking_tools", [])
+        missing_items = []
+        if "GA4" not in tracking:
+            missing_items.append("Google Analytics 4")
+        if not gsc_verified:
+            missing_items.append("Google Search Console")
+        if missing_items:
+            items_html = "\n".join(f"        <li>{item}</li>" for item in missing_items)
+            sections.append(f"""
+    <div class="solution-block">
+      <h4>📈 Analytics & Search Console Setup</h4>
+      <p>Missing: {', '.join(missing_items)}</p>
+      <p><strong>Google Analytics 4</strong> — add GA4 tag to <code>layout.tsx</code> or <code>_app.tsx</code>:</p>
+      <pre class="code-block">// app/layout.tsx (Next.js App Router)
+import Script from 'next/script';
+
+export default function RootLayout({{ children }}) {{
+  return (
+    <html>
+      <head>
+        <Script src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX" />
+        <Script id="google-analytics">
+          {{`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){{dataLayer.push(arguments);}}
+            gtag('js', new Date());
+            gtag('config', 'G-XXXXXXXXXX');
+          `}}
+        </Script>
+      </head>
+      <body>{{children}}</body>
+    </html>
+  );
+}}</pre>
+      <p><strong>Google Search Console</strong> — verify domain ownership via DNS TXT record:</p>
+      <pre class="code-block"># Add this DNS TXT record at your domain registrar:
+# Name: @ (or your domain)
+# Type: TXT
+# Value: google-site-verification=XXXXXXXXXXXXXXXXXXXXXXXXX</pre>
+      <p>Or verify via HTML meta tag in <code>&lt;head&gt;</code>:</p>
+      <pre class="code-block">&lt;meta name="google-site-verification" content="XXXXXXXXXXXXXXXXXXXXXXXXX" /&gt;</pre>
     </div>""")
 
     return "\n".join(sections)
