@@ -321,7 +321,7 @@ def main():
 
     html = generate_html(data)
 
-    with open(args.output, "w") as f:
+    with open(args.output, "w", encoding="utf-8") as f:
         f.write(html)
 
     print(f"✅ Report generated: {args.output}", file=sys.stderr)
