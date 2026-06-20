@@ -1474,7 +1474,7 @@ Not everything needs to be done at once. Use this priority guide, which maps to 
 | `check_schema.py` | 206 | JSON-LD extraction + 10 schema type validation |
 | `check_llms_files.py` | 145 | /llms.txt, /pricing.md, /AGENTS.md existence + quality |
 | `check_sitemap.py` | 192 | Sitemap XML parsing, nested index support |
-| `generate_score_report.py` | 333 | Aggregates all checks → ROSTIDO-SCORE HTML dashboard |
+| `generate_score_report.py` | 630 | Aggregates all checks → ROSTIDO-SCORE HTML dashboard with Framer-inspired dark design, gradient score card, Next.js/JSON-LD code solutions |
 | `check_ai_visibility.py` | 211 | Interactive AI citation tracker (ChatGPT, Perplexity, Gemini, AIO) |
 | **Total** | **1,623** | |
 
