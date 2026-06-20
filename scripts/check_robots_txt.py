@@ -58,22 +58,19 @@ def fetch_robots(url: str, timeout: int = 15) -> tuple:
         parsed = urlparse(url)
 
     robots_url = f"{parsed.scheme}://{parsed.netloc}/robots.txt"
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) SEO-Checker/1.0"
 
-    rp = urllib.robotparser.RobotFileParser()
-    rp.set_url(robots_url)
-
+    # Manually fetch with a browser-like UA (Cloudflare blocks Python-urllib)
     try:
-        rp.read()
+        req = urllib.request.Request(robots_url, headers={"User-Agent": user_agent})
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            raw_text = resp.read().decode("utf-8", errors="replace")
     except Exception as e:
         return None, None, robots_url, str(e)
 
-    # Fetch raw text for sitemap extraction
-    try:
-        req = urllib.request.Request(robots_url, headers={"User-Agent": "SEO-Checker/1.0"})
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            raw_text = resp.read().decode("utf-8", errors="replace")
-    except Exception:
-        raw_text = ""
+    # Parse into RobotFileParser
+    rp = urllib.robotparser.RobotFileParser()
+    rp.parse(raw_text)
 
     return rp, raw_text, robots_url, None
 
