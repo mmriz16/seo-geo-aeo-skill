@@ -1462,89 +1462,41 @@ Not everything needs to be done at once. Use this priority guide, which maps to 
 
 ---
 
-# APPENDIX C: AUTOMATION SCRIPTS REFERENCE
+# APPENDIX C: AUTOMATION SCRIPTS
 
-These are **stdlib-only Python scripts** — zero external dependencies. Use them to produce deterministic, data-backed audits instead of self-assessment alone.
+**8 real Python scripts** in `scripts/` — stdlib-only, zero dependencies. Each script produces structured JSON output (`--json` flag) and a human-readable console view (default).
 
-## C.1 `check_security_headers.py`
+| Script | Lines | Purpose |
+|--------|:-----:|---------|
+| `check_security_headers.py` | 165 | HSTS, CSP, XFO, X-CT-O, Referrer-Policy, Permissions-Policy |
+| `check_robots_txt.py` | 185 | robots.txt parsing, AI bot rules, sitemap directives |
+| `check_core_web_vitals.py` | 186 | LCP, INP, CLS, TTFB via PageSpeed Insights (no API key) |
+| `check_schema.py` | 206 | JSON-LD extraction + 10 schema type validation |
+| `check_llms_files.py` | 145 | /llms.txt, /pricing.md, /AGENTS.md existence + quality |
+| `check_sitemap.py` | 192 | Sitemap XML parsing, nested index support |
+| `generate_score_report.py` | 333 | Aggregates all checks → ROSTIDO-SCORE HTML dashboard |
+| `check_ai_visibility.py` | 211 | Interactive AI citation tracker (ChatGPT, Perplexity, Gemini, AIO) |
+| **Total** | **1,623** | |
 
-| Field | Value |
-|-------|-------|
-| **Input** | URL |
-| **Output** | JSON: HSTS, CSP, XFO, X-CT-O, Referrer-Policy, XXSS-Protection status |
-| **Logic** | Sends HEAD request, parses response headers against best-practice values |
-| **Dependencies** | `urllib.request` (stdlib) |
-| **Usage** | `python3 check_security_headers.py https://example.com` |
+### Quick Start
 
-## C.2 `check_robots_txt.py`
+```bash
+# Single check
+python3 scripts/check_security_headers.py https://example.com
+python3 scripts/check_llms_files.py https://example.com --json
 
-| Field | Value |
-|-------|-------|
-| **Input** | URL |
-| **Output** | JSON: Allowed/disallowed rules per bot, Sitemap directives, AI bot presence |
-| **Logic** | Fetches `/robots.txt`, parses via `robotparser` (stdlib) |
-| **Dependencies** | `urllib.robotparser` (stdlib) |
-| **Usage** | `python3 check_robots_txt.py https://example.com` |
+# Full audit + HTML report
+python3 scripts/generate_score_report.py https://example.com --output report.html
 
-## C.3 `check_core_web_vitals.py`
+# Monthly AI visibility tracking
+python3 scripts/check_ai_visibility.py
+```
 
-| Field | Value |
-|-------|-------|
-| **Input** | URL |
-| **Output** | JSON: LCP, INP, CLS, TTFB scores (mobile + desktop) |
-| **Logic** | Calls Google PageSpeed Insights API (free, no key needed) |
-| **Dependencies** | `urllib.request` + `json` (stdlib) |
-| **Usage** | `python3 check_core_web_vitals.py https://example.com` |
-
-## C.4 `check_schema.py`
-
-| Field | Value |
-|-------|-------|
-| **Input** | URL |
-| **Output** | JSON: All JSON-LD schemas found, validity check, missing recommended schemas |
-| **Logic** | Fetches HTML, extracts `<script type="application/ld+json">`, validates JSON parse |
-| **Dependencies** | `urllib.request` + `json` + `re` (stdlib) |
-| **Usage** | `python3 check_schema.py https://example.com` |
-
-## C.5 `check_llms_files.py`
-
-| Field | Value |
-|-------|-------|
-| **Input** | URL |
-| **Output** | JSON: Status of /llms.txt, /pricing.md, /AGENTS.md (200/404), character count |
-| **Logic** | GETs each path, checks HTTP status and content length |
-| **Dependencies** | `urllib.request` (stdlib) |
-| **Usage** | `python3 check_llms_files.py https://example.com` |
-
-## C.6 `check_sitemap.py`
-
-| Field | Value |
-|-------|-------|
-| **Input** | URL |
-| **Output** | JSON: Sitemap status, URL count, last modified, first 10 URLs for manual review |
-| **Logic** | Fetches sitemap from robots.txt or /sitemap.xml, parses XML |
-| **Dependencies** | `urllib.request` + `xml.etree.ElementTree` (stdlib) |
-| **Usage** | `python3 check_sitemap.py https://example.com` |
-
-## C.7 `generate_score_report.py`
-
-| Field | Value |
-|-------|-------|
-| **Input** | JSON from all above scripts + manual scores |
-| **Output** | HTML report with ROSTIDO-SCORE in each dimension, overall score, veto status, P0-P3 breakdown |
-| **Logic** | Renders template with dimension bars, veto warnings, priority action list |
-| **Dependencies** | `json` (stdlib). HTML template inline. |
-| **Usage** | `python3 generate_score_report.py --input scores.json --output report.html` |
-
-## C.8 `check_ai_visibility.py` (manual-assisted)
-
-| Field | Value |
-|-------|-------|
-| **Input** | List of queries |
-| **Output** | JSON: Citation status per platform (ChatGPT, Perplexity, Gemini) |
-| **Logic** | Prompts human to check each platform and enter result. Fills the Monthly AI Visibility Tracker. |
-| **Dependencies** | `json` (stdlib) |
-| **Usage** | `python3 check_ai_visibility.py --queries queries.txt` |
+### All scripts produce
+- ✅ Human-readable console output by default
+- ✅ Structured JSON with `--json` flag (for piping/chaining)
+- ✅ Error handling (timeout, 404, connection refused)
+- ✅ Exit codes (0 = pass, 1 = fail)
 
 ---
 

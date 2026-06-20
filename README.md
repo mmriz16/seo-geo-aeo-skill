@@ -27,7 +27,7 @@ SEO ↔ Entity SEO ↔ GEO ↔ AEO ↔ LLMO
 - **Query Fan-Out Framework** — 30+ query templates across 4 categories, step-by-step mapping guide
 - **Monthly AI Visibility Tracker** — template for tracking citations across ChatGPT, Perplexity, Gemini, AI Overviews
 - **Priority Tiers** — P0 (veto items) → P3 (ongoing), mapped to score dimensions
-- **8 Python Script Blueprints** — stdlib-only specs for automated security headers, robots.txt, CWV, schema, llms files, sitemap, report generation, and AI visibility checking
+- **8 Real Python Scripts** (1,623 lines) — stdlib-only, ready to run: security headers, robots.txt, CWV, schema, llms.txt, sitemap, HTML report, AI visibility tracker
 - **22 Official Reference Links** — direct hrefs to Google Search Central docs throughout
 
 ## How to Use
@@ -63,7 +63,8 @@ Open `SKILL.md` and navigate:
 - **§9** → Skill contract & handoff protocol
 - **§10** → Query fan-out templates
 - **§12** → Priority tiers P0-P3
-- **Appendix C** → Automation script blueprints
+- **Appendix C** → Automation scripts (8 real Python scripts, 1,623 lines)
+- **`scripts/`** → Ready-to-run Python scripts: `check_security_headers.py`, `check_robots_txt.py`, `check_core_web_vitals.py`, `check_schema.py`, `check_llms_files.py`, `check_sitemap.py`, `generate_score_report.py`, `check_ai_visibility.py`
 
 ## Scoring System
 
