@@ -98,9 +98,16 @@ def run_check(script_path: str, url: str) -> dict:
             [sys.executable, script_path, url, "--json"],
             capture_output=True, text=True, timeout=30,
         )
-        if result.returncode == 0 and result.stdout.strip():
-            return json.loads(result.stdout)
-        return {"score": None, "error": result.stderr[:300] or "no output"}
+        # Try parsing stdout first — it may have valid JSON even on non-zero exit
+        out = result.stdout.strip()
+        if out:
+            try:
+                return json.loads(out)
+            except json.JSONDecodeError:
+                pass
+        # Fallback: stderr or error message
+        msg = result.stderr.strip() or "no output"
+        return {"score": None, "error": msg[:300]}
     except subprocess.TimeoutExpired:
         return {"score": None, "error": "timeout (30s)"}
     except Exception as e:

@@ -53,12 +53,15 @@ def fetch_file(base_url: str, path: str, timeout: int = 10) -> dict:
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
             content = resp.read().decode("utf-8", errors="replace")
+            is_html = content.strip().lower().startswith("<!doctype html") or content.strip().lower().startswith("<html")
             return {
                 "url": url,
                 "status": resp.status,
                 "content_length": len(content),
                 "content_preview": content[:300] if content else "",
                 "exists": resp.status == 200,
+                "is_html": is_html,
+                "actual_type": "html" if is_html else "text",
             }
     except urllib.error.HTTPError as e:
         return {
@@ -101,7 +104,13 @@ def main():
         result["purpose"] = f["purpose"]
         result["min_chars"] = f["min_chars"]
 
-        if result["exists"] and result["content_length"] >= f["min_chars"]:
+        # Check for HTML content (Next.js catch-all / SPA fallback)
+        if result.get("is_html"):
+            result["quality"] = "html_wrapper"
+            result["warning"] = "File returns HTML instead of markdown (likely app catch-all route)"
+            # Still score 5 (file physically exists, but wrong format)
+            score += 5
+        elif result["exists"] and result["content_length"] >= f["min_chars"]:
             result["quality"] = "good"
             score += 10
         elif result["exists"] and result["content_length"] < f["min_chars"]:
@@ -130,7 +139,9 @@ def main():
         print(f"  Score: {overall['score']}/100")
         print(f"{'='*60}\n")
         for name, data in results.items():
-            if data.get("exists"):
+            if data.get("is_html"):
+                icon = "⚠️"
+            elif data.get("exists"):
                 icon = "✅" if data.get("quality") == "good" else "🟡"
             else:
                 icon = "❌"
@@ -139,6 +150,8 @@ def main():
             print(f"     Purpose: {data['purpose']}")
             if data.get("exists"):
                 print(f"     Size: {data['content_length']} chars")
+            if data.get("warning"):
+                print(f"     ⚠️ {data['warning']}")
             if data.get("quality") == "too_short":
                 print(f"     ⚠️ Too short ({data['content_length']} chars, min {data['min_chars']})")
             print()
