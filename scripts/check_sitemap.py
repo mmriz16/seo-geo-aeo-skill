@@ -12,6 +12,7 @@ Usage:
 """
 
 import argparse
+import io
 import json
 import sys
 import urllib.request
@@ -19,6 +20,10 @@ import urllib.error
 import urllib.robotparser
 import xml.etree.ElementTree as ET
 from urllib.parse import urlparse, urljoin
+
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 SITEMAP_NS = "{http://www.sitemaps.org/schemas/sitemap/0.9}"
 

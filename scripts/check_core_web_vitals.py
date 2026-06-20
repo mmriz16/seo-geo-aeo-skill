@@ -12,11 +12,16 @@ Usage:
 """
 
 import argparse
+import io
 import json
 import sys
 import urllib.request
 import urllib.error
 import urllib.parse
+
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 PSI_API = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed"
 VALID_STRATEGIES = ("mobile", "desktop")

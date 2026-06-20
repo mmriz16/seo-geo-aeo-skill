@@ -16,6 +16,7 @@ Usage:
 """
 
 import argparse
+import io
 import json
 import os
 import subprocess
@@ -27,6 +28,10 @@ from urllib.parse import urlparse
 
 import urllib.request
 import urllib.error
+
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 # ROSTIDO-SCORE dimension definitions
 ROSTIDO_DIMENSIONS = {

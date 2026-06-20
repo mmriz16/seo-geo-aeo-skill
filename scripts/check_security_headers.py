@@ -11,11 +11,16 @@ Usage:
 """
 
 import argparse
+import io
 import json
 import sys
 import urllib.request
 import urllib.error
 from urllib.parse import urlparse
+
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8", errors="replace")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="replace")
 
 SECURITY_HEADERS = {
     "strict-transport-security": {
